@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Info</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Banner -->
+<div class="banner">
+    <a href="index.html">Home</a>
+    <a href="order.html">Order ID</a>
+    <a href="about.html">About Us</a>
+    <a href="cart.html">Cart <span id="cart-count">0</span></a>
+</div>
+
+<!-- Payment Info Page -->
+<div class="payment-info-container">
+    <h1>Payment Information</h1>
+    <div id="payment-info"></div>
+    <div id="handling-time-info"></div>
+</div>
+
+<script>
+    // Display payment info based on selected payment method
+    window.onload = function() {
+        const paymentMethod = localStorage.getItem('paymentMethod');
+        const paymentInfoContainer = document.getElementById('payment-info');
+        const handlingTimeInfoContainer = document.getElementById('handling-time-info');
+
+        if (paymentMethod === 'bitcoin') {
+            paymentInfoContainer.innerHTML = '<p>Payment Address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</p>';
+            handlingTimeInfoContainer.innerHTML = '<p>Handling Time: 3-5 business days</p>';
+        } else if (paymentMethod === 'cashApp') {
+            paymentInfoContainer.innerHTML = '<p>Cash App $IDZONEZ</p>';
+            handlingTimeInfoContainer.innerHTML = '<p>Handling Time: 1-2 business days</p>';
+        } else if (paymentMethod === 'ethereum') {
+            paymentInfoContainer.innerHTML = '<p>Payment Address: 0x32a5bf9cdb17b15422bb6bd926b4cf58b40db144</p>';
+            handlingTimeInfoContainer.innerHTML = '<p>Handling Time: 2-4 business days</p>';
+        }
+    };
+</script>
+
+</body>
+</html>
