@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Student ID Creation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Banner -->
+<div class="banner">
+    <a href="index.html">Home</a>
+    <a href="order.html">Order ID</a>
+    <a href="about.html">Reselling</a>
+    <a href="cart.html">Cart <span id="cart-count">0</span></a>
+    <a href="login.html">Login</a>
+</div>
+
+<!-- Main Content -->
+<div class="content">
+    <h1>IDZONEZ!!</h1>
+    <p>This is where you can create personalized IDs. Fill in your details, and we'll create a ID for you to start some fun!</p>
+    <p>All IDs come with a free duplicate. All IDs are $75 per person. Shipping is $30 per order. The more poeple in the order the more you save!!</p>
+    <a href="https://www.reddit.com/r/f4kes/s/pN8bnlg6Zi" download>Click here to see some of our products!</a> 
+</div>
+
+<script>
+    // Function to update the cart count across all pages
+function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const cartCount = cart.length;
+    document.getElementById('cart-count').textContent = cartCount;
+}
+
+// Call updateCartCount on page load to ensure cart is always accurate
+window.onload = updateCartCount;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Sign Up</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<!-- Banner -->
+<div class="banner">
+    <a href="index.html">Home</a>
+    <a href="order.html">Order ID</a>
+    <a href="about.html">Reselling</a>
+    <a href="cart.html">Cart <span id="cart-count">0</span></a>
+    <a href="login.html">Login</a>
+</div>
+
+<!-- Login/Sign-Up Content -->
+<div class="form-container">
+    <h1 id="form-title">Login</h1>
+    
+    <!-- Login Form -->
+    <div id="login-form" style="display:block;">
+        <form id="login-form-action">
+            <label for="username">Username</label>
+            <input type="text" id="login-username" placeholder="Enter username" required>
+    
+            <label for="password">Password</label>
+            <input type="password" id="login-password" placeholder="Enter password" required>
+    
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="#" onclick="toggleForm('signup')">Sign up here</a></p>
+        <p><a href="#" onclick="toggleForm('admin')">Admin Login</a></p>
+    </div>
+
+    <!-- Admin Login Form -->
+    <div id="admin-login-form" style="display:none;">
+        <form id="admin-login-form-action">
+            <h2>Admin Login</h2>
+            <label for="admin-token">Enter Admin Token</label>
+            <input type="text" id="admin-token" placeholder="Enter admin token" required>
+            <button type="submit">Submit</button>
+        </form>
+        <p>Back to <a href="#" onclick="toggleForm('login')">Login</a></p>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div id="signup-form" style="display:none;">
+        <form id="signup-form-action">
+            <label for="signup-username">Username</label>
+            <input type="text" id="signup-username" placeholder="Enter username" required>
+
+            <label for="signup-email">Email</label>
+            <input type="email" id="signup-email" placeholder="Enter email" required>
+
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" placeholder="Enter password" required>
+
+            <button type="submit">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="#" onclick="toggleForm('login')">Login here</a></p>
+    </div>
+</div>
+
+<script>
+    // Toggle between login, signup, and admin login forms
+    function toggleForm(formType) {
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const adminLoginForm = document.getElementById('admin-login-form');
+        const formTitle = document.getElementById('form-title');
+
+        if (formType === 'login') {
+            loginForm.style.display = 'block';
+            signupForm.style.display = 'none';
+            adminLoginForm.style.display = 'none';
+            formTitle.textContent = 'Login';
+        } else if (formType === 'signup') {
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+            adminLoginForm.style.display = 'none';
+            formTitle.textContent = 'Sign Up';
+        } else if (formType === 'admin') {
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'none';
+            adminLoginForm.style.display = 'block';
+            formTitle.textContent = 'Admin Login';
+        }
+    }
+
+    // Handle login form submission
+    document.getElementById('login-form-action').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('login-username').value;
+        const password = document.getElementById('login-password').value;
+
+        // Send a POST request to the login API
+        fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ UserName: username, Password: password })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.token) {
+                // Store the JWT token in localStorage
+                localStorage.setItem('token', data.token);
+                // Redirect to the home or dashboard page
+                window.location.href = '/';  // Change as needed
+            } else {
+                alert('Invalid credentials');
+            }
+        })
+        .catch(err => alert('Login failed: ' + err));
+    });
+
+    // Handle admin login form submission
+    document.getElementById('admin-login-form-action').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const token = document.getElementById('admin-token').value;
+
+        // Validate the token here (for simplicity, we assume it's a hardcoded valid token)
+        const validToken = "your-admin-token-here"; // Replace with your valid token
+
+        if (token === validToken) {
+            // Redirect to admin page if token is valid
+            window.location.href = '/admin';  // Admin page URL
+        } else {
+            alert('Invalid admin token');
+        }
+    });
+
+    // Handle sign-up form submission
+    document.getElementById('signup-form-action').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('signup-username').value;
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+
+        // Email Validation Regex
+       const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (!emailRegex.test(email)) {
+            alert('Please enter a valid email address.');
+            return;  // Prevent form submission if the email is invalid
+        }
+
+        // Send a POST request to the register API
+        fetch('/api/auth/register', {  // Use your correct API URL here
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ UserName: username, Email: email, Password: password })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert('Sign up successful!');
+                toggleForm('login'); // Switch to login form
+            } else {
+                alert('Sign-up failed: ' + data.errors);
+            }
+        })
+        .catch(err => alert('Sign-up failed: ' + err));
+    });
+</script>
+
+</body>
+</html>

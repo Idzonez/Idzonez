@@ -1,0 +1,6 @@
+@IDZonez_HostAddress = http://localhost:5219
+
+GET {{IDZonez_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
