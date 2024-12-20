@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Student ID</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Banner -->
+<div class="banner">
+    <a href="index.cshtml">Home</a>
+    <a href="order.cshtml">Order ID</a>
+    <a href="about.cshtml">Reselling</a>
+    <a href="cart.cshtml">Cart <span id="cart-count">0</span></a>
+    <a href="login.cshtml">Login</a>
+</div>
+
+<!-- Order Form -->
+<div class="order-form">
+    <h1>Create a personalized ID</h1>
+    <form id="order-form">
+        <label for="first-name">First Name</label>
+        <input type="text" id="first-name" placeholder="First Name" required>
+
+        <label for="last-name">Last Name</label>
+        <input type="text" id="last-name" placeholder="Last Name" required>
+
+        <label for="address">Address</label>
+        <input type="text" id="address" placeholder="Address" required>
+
+        <label for="zip-code">Zip Code</label>
+        <input type="text" id="zip-code" placeholder="Zip Code" required>
+
+        <!-- State Dropdown with all 50 States -->
+        <label for="state">State</label>
+        <select id="state" required>
+            <option value="Alabama">Alabama</option>
+            <option value="Alaska">Alaska</option>
+            <option value="Arizona">Arizona</option>
+            <option value="Arkansas">Arkansas</option>
+            <option value="California">California</option>
+            <option value="Colorado">Colorado</option>
+            <option value="Connecticut">Connecticut</option>
+            <option value="Delaware">Delaware</option>
+            <option value="Florida">Florida</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Hawaii">Hawaii</option>
+            <option value="Idaho">Idaho</option>
+            <option value="Illinois">Illinois</option>
+            <option value="Indiana">Indiana</option>
+            <option value="Iowa">Iowa</option>
+            <option value="Kansas">Kansas</option>
+            <option value="Kentucky">Kentucky</option>
+            <option value="Louisiana">Louisiana</option>
+            <option value="Maine">Maine</option>
+            <option value="Maryland">Maryland</option>
+            <option value="Massachusetts">Massachusetts</option>
+            <option value="Michigan">Michigan</option>
+            <option value="Minnesota">Minnesota</option>
+            <option value="Mississippi">Mississippi</option>
+            <option value="Missouri">Missouri</option>
+            <option value="Montana">Montana</option>
+            <option value="Nebraska">Nebraska</option>
+            <option value="Nevada">Nevada</option>
+            <option value="New Hampshire">New Hampshire</option>
+            <option value="New Jersey">New Jersey</option>
+            <option value="New Mexico">New Mexico</option>
+            <option value="New York">New York</option>
+            <option value="North Carolina">North Carolina</option>
+            <option value="North Dakota">North Dakota</option>
+            <option value="Ohio">Ohio</option>
+            <option value="Oklahoma">Oklahoma</option>
+            <option value="Oregon">Oregon</option>
+            <option value="Pennsylvania">Pennsylvania</option>
+            <option value="Rhode Island">Rhode Island</option>
+            <option value="South Carolina">South Carolina</option>
+            <option value="South Dakota">South Dakota</option>
+            <option value="Tennessee">Tennessee</option>
+            <option value="Texas">Texas</option>
+            <option value="Utah">Utah</option>
+            <option value="Vermont">Vermont</option>
+            <option value="Virginia">Virginia</option>
+            <option value="Washington">Washington</option>
+            <option value="West Virginia">West Virginia</option>
+            <option value="Wisconsin">Wisconsin</option>
+            <option value="Wyoming">Wyoming</option>
+        </select>
+
+        <!-- Height Dropdown (4'11" to 6'9") -->
+        <label for="height">Height (feet 'inches)</label>
+        <select id="height">
+            <option value="4'11\"">4'11"</option>
+            <option value="5'0\"">5'0"</option>
+            <option value="5'1\"">5'1"</option>
+            <option value="5'2\"">5'2"</option>
+            <option value="5'3\"">5'3"</option>
+            <option value="5'4\"">5'4"</option>
+            <option value="5'5\"">5'5"</option>
+            <option value="5'6\"">5'6"</option>
+            <option value="5'7\"">5'7"</option>
+            <option value="5'8\"">5'8"</option>
+            <option value="5'9\"">5'9"</option>
+            <option value="5'10\"">5'10"</option>
+            <option value="5'11\"">5'11"</option>
+            <option value="6'0\"">6'0"</option>
+            <option value="6'1\"">6'1"</option>
+            <option value="6'2\"">6'2"</option>
+            <option value="6'3\"">6'3"</option>
+            <option value="6'4\"">6'4"</option>
+            <option value="6'5\"">6'5"</option>
+            <option value="6'6\"">6'6"</option>
+            <option value="6'7\"">6'7"</option>
+            <option value="6'8\"">6'8"</option>
+            <option value="6'9\"">6'9"</option>
+        </select>
+
+        <label for="birthday">Birthday</label>
+        <input type="date" id="birthday" required>
+
+        <label for="weight">Weight (lbs)</label>
+        <input type="number" id="weight" placeholder="Weight in pounds" required>
+
+        <label for="issue-date">Issue Date</label>
+        <input type="date" id="issue-date" required>
+
+        <label for="organ-donor">Organ Donor</label>
+        <select id="organ-donor">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
+
+        <!-- Hair Color Dropdown (Removed certain colors) -->
+        <label for="hair-color">Hair Color</label>
+        <select id="hair-color">
+            <option value="Black">Black</option>
+            <option value="Brown">Brown</option>
+            <option value="Blonde">Blonde</option>
+            <option value="Red">Red</option>
+            <option value="Bald">Bald</option>
+        </select>
+
+        <!-- Eye Color Dropdown (Removed certain colors) -->
+        <label for="eye-color">Eye Color</label>
+        <select id="eye-color">
+            <option value="Brown">Brown</option>
+            <option value="Blue">Blue</option>
+            <option value="Green">Green</option>
+            <option value="Hazel">Hazel</option>
+            <option value="Gray">Gray</option>
+        </select>
+
+        <!-- Image Uploads -->
+        <label for="image1">Image 1</label>
+        <input type="file" id="image1" accept="image/*" onchange="previewImage(event, 'image1-preview')">
+        <img id="image1-preview" src="" alt="Image Preview" style="width: 100px; display: none;">
+
+        <label for="image2">Image 2</label>
+        <input type="file" id="image2" accept="image/*" onchange="previewImage(event, 'image2-preview')">
+        <img id="image2-preview" src="" alt="Image Preview" style="width: 100px; display: none;">
+
+        <button type="submit">Add to Cart</button>
+    </form>
+</div>
+
+<script>
+    // Function to preview image before uploading
+    function previewImage(event, previewId) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const preview = document.getElementById(previewId);
+            preview.src = reader.result;
+            preview.style.display = 'inline';
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    // Function to handle form submission and save data to localStorage
+    document.getElementById('order-form').addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent form submission
+
+        // Get the input values
+        const orderData = {
+            firstName: document.getElementById('first-name').value,
+            lastName: document.getElementById('last-name').value,
+            address: document.getElementById('address').value,
+            zipCode: document.getElementById('zip-code').value,
+            state: document.getElementById('state').value, // Store the selected state
+            hairColor: document.getElementById('hair-color').value,
+            eyeColor: document.getElementById('eye-color').value,
+            height: document.getElementById('height').value,
+            birthday: document.getElementById('birthday').value,
+            weight: document.getElementById('weight').value,
+            issueDate: document.getElementById('issue-date').value,
+            organDonor: document.getElementById('organ-donor').value,
+            image1: document.getElementById('image1').files[0] ? document.getElementById('image1').files[0].name : null,
+            image2: document.getElementById('image2').files[0] ? document.getElementById('image2').files[0].name : null
+        };
+
+        // Get existing cart from localStorage
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Add the new order to the cart
+        cart.push(orderData);
+
+        // Save the updated cart back to localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        // Update the cart count on the page
+        updateCartCount();
+
+        // Optionally clear the form
+        document.getElementById('order-form').reset();
+        document.getElementById('image1-preview').style.display = 'none';
+        document.getElementById('image2-preview').style.display = 'none';
+    });
+
+    // Function to update the cart count across all pages
+    function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const cartCount = cart.length;
+        document.getElementById('cart-count').textContent = cartCount;
+    }
+
+    // Call updateCartCount on page load to ensure cart is always accurate
+    window.onload = updateCartCount;
+
+</script>
+
+</body>
+</html>

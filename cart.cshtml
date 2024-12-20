@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .cart-item img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+
+        .item-details {
+            margin-top: 10px;
+        }
+
+        .cart-item button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #2196F3; 
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .cart-item button:hover {
+            background-color: #1976D2;
+        }
+
+        .cart-item h3 {
+            margin: 0;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .cart-container {
+            width: 90%;
+            margin: 20px auto;
+        }
+
+        .cart-container h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Banner -->
+<div class="banner">
+    <a href="index.cshtml">Home</a>
+    <a href="order.cshtml">Order ID</a>
+    <a href="about.cshtml">Reselling</a>
+    <a href="cart.cshtml">Cart <span id="cart-count">0</span></a>
+    <a href="login.cshtml">Login</a>
+</div>
+
+<!-- Cart Page -->
+<div class="cart-container">
+    <h1>Your Cart</h1>
+    <div id="cart-items"></div>
+    <button onclick="window.location.href='checkout.cshtml'">Proceed to Checkout</button>
+</div>
+
+<script>
+    function displayCartItems() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const cartItemsContainer = document.getElementById('cart-items');
+        cartItemsContainer.innerHTML = '';
+
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
+        } else {
+            cart.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('cart-item');
+
+                itemDiv.innerHTML = `
+                    <img src="${item.image1 || 'default.jpg'}" alt="Image 1">
+                    <div>
+                        <h3>${item.firstName} ${item.lastName}</h3>
+                        <p>State: ${item.state}</p> <!-- Displaying the state -->
+                        <button onclick="toggleItemDetails(${index})">Show Details</button>
+                        <div id="item-details-${index}" class="item-details" style="display: none;">
+                            <p>Hair Color: ${item.hairColor}</p>
+                            <p>Eye Color: ${item.eyeColor}</p>
+                            <p>Height: ${item.height}</p>
+                            <p>Birthday: ${item.birthday}</p>
+                            <p>Weight: ${item.weight} lbs</p>
+                            <p>Issue Date: ${item.issueDate}</p>
+                            <p>Organ Donor: ${item.organDonor}</p>
+                            <p>Image 2: <img src="${item.image2 || 'default.jpg'}" alt="Image 2"></p>
+                        </div>
+                        <button onclick="confirmDeleteItem(${index})">Delete</button>
+                    </div>
+                `;
+
+                cartItemsContainer.appendChild(itemDiv);
+            });
+        }
+    }
+
+    function toggleItemDetails(index) {
+        const detailsDiv = document.getElementById(`item-details-${index}`);
+        detailsDiv.style.display = detailsDiv.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function confirmDeleteItem(index) {
+        const confirmDelete = confirm("Are you sure you want to delete this item?");
+        if (confirmDelete) {
+            deleteItem(index);
+        }
+    }
+
+    function deleteItem(index) {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart.splice(index, 1);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        displayCartItems();
+        updateCartCount();
+    }
+
+    function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        document.getElementById('cart-count').textContent = cart.length;
+    }
+
+    window.onload = function() {
+        displayCartItems();
+        updateCartCount();
+    };
+</script>
+
+</body>
+</html>

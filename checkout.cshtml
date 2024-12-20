@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Banner -->
+<div class="banner">
+    <a href="index.cshtml">Home</a>
+    <a href="order.cshtml">Order ID</a>
+    <a href="about.cshtml">Reselling</a>
+    <a href="cart.cshtml">Cart <span id="cart-count">0</span></a>
+</div>
+
+<!-- Checkout Page -->
+<div class="checkout-container">
+    <h1>Checkout</h1>
+    <form id="payment-form">
+        <label for="payment-method">Choose Payment Method:</label>
+        <select id="payment-method" required>
+            <option value="bitcoin">Bitcoin</option>
+            <option value="cashApp">Cash App</option>
+            <option value="ethereum">Ethereum</option>
+        </select>
+
+        <!-- Email Input -->
+        <label for="email">Enter your email:</label>
+        <input type="email" id="email" name="email" placeholder="Your email address" required>
+
+        <!-- Shipping Address Input -->
+        <label for="shipping-address">Enter your shipping address:</label>
+        <textarea id="shipping-address" name="shipping-address" placeholder="Your shipping address" rows="4" required></textarea>
+
+        <button type="submit">Proceed</button>
+    </form>
+</div>
+
+<script>
+    // Handle payment method selection and redirect to the payment info page
+    document.getElementById('payment-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const paymentMethod = document.getElementById('payment-method').value;
+        const email = document.getElementById('email').value;
+        const shippingAddress = document.getElementById('shipping-address').value;
+        
+        // Store the email, shipping address, and payment method in localStorage
+        localStorage.setItem('paymentMethod', paymentMethod);
+        localStorage.setItem('email', email);
+        localStorage.setItem('shippingAddress', shippingAddress);
+
+        // Redirect to payment info page
+        window.location.href = 'payment-info.html';
+    });
+
+    // Function to update the cart count across all pages
+    function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const cartCount = cart.length;
+        document.getElementById('cart-count').textContent = cartCount;
+    }
+
+    // Call updateCartCount on page load to ensure cart is always accurate
+    window.onload = updateCartCount;
+
+</script>
+
+</body>
+</html>

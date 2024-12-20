@@ -1,0 +1,41 @@
+<!-- admin-dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+    <h2>Orders</h2>
+    <div id="orders"></div>
+
+    <script>
+        window.onload = function() {
+            const token = localStorage.getItem('adminToken');
+            if (!token) {
+                window.location.href = 'admin-login.cshtml';
+                return;
+            }
+
+            fetch('/admin/dashboard', {
+                method: 'GET',
+                headers: {
+                    'Authorization': token
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const ordersContainer = document.getElementById('orders');
+                data.orders.forEach(order => {
+                    const orderDiv = document.createElement('div');
+                    orderDiv.textContent = `Order ID: ${order.orderId}, Customer: ${order.customer}, Status: ${order.status}`;
+                    ordersContainer.appendChild(orderDiv);
+                });
+            })
+            .catch(err => alert('Failed to fetch data: ' + err));
+        };
+    </script>
+</body>
+</html>
