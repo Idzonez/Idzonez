@@ -1,4 +1,4 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -101,7 +101,7 @@
         fetch('https://idzonez.com/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ UserName: username, Password: password })
+            body: JSON.stringify({ username: username, password: password }) // Fixed key names
         })
         .then(response => response.json())
         .then(data => {
@@ -148,19 +148,11 @@
         const email = document.getElementById('signup-email').value;
         const password = document.getElementById('signup-password').value;
 
-        // Email Validation Regex
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-        if (!emailRegex.test(email)) {
-            alert('Please enter a valid email address.');
-            return;
-        }
-
         // Send a POST request to the register API
         fetch('https://idzonez.com/api/auth/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ UserName: username, Email: email, Password: password })
+            body: JSON.stringify({ username: username, email: email, password: password }) // Fixed key names
         })
         .then(response => response.json())
         .then(data => {
