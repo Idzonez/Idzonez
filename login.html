@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -98,7 +98,7 @@
         const password = document.getElementById('login-password').value;
 
         // Send a POST request to the login API
-        fetch('/api/auth/login', {
+        fetch('https://idzonez.com/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ UserName: username, Password: password })
@@ -122,15 +122,23 @@
         e.preventDefault();
         const token = document.getElementById('admin-token').value;
 
-        // Validate the token here (for simplicity, we assume it's a hardcoded valid token)
-        const validToken = "your-admin-token-here"; // Replace with your valid token
-
-        if (token === validToken) {
-            // Redirect to admin page if token is valid
-            window.location.href = '/admin';  // Admin page URL
-        } else {
-            alert('Invalid admin token');
-        }
+        // Validate the token via the API
+        fetch('https://idzonez.com/api/auth/validate-admin', { 
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.isValid) {
+                window.location.href = '/admin';  // Redirect to admin page
+            } else {
+                alert('Invalid admin token');
+            }
+        })
+        .catch(err => alert('Admin login failed: ' + err));
     });
 
     // Handle sign-up form submission
@@ -145,11 +153,11 @@
 
         if (!emailRegex.test(email)) {
             alert('Please enter a valid email address.');
-            return;  // Prevent form submission if the email is invalid
+            return;
         }
 
         // Send a POST request to the register API
-        fetch('/api/auth/register', {  // Use your correct API URL here
+        fetch('https://idzonez.com/api/auth/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ UserName: username, Email: email, Password: password })
