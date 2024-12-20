@@ -3,11 +3,19 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
-const app = express();
-const port = 3000;
 const cors = require('cors');
-app.use(cors()); // This will allow all origins; adjust it as needed for your app.
+const app = express();
+const port = process.env.PORT || 3000;  // Use environment variable for port
+const dotenv = require('dotenv');
+dotenv.config();  // Load environment variables from .env file
 
+// Set up CORS with specific origins for production
+const corsOptions = {
+  origin: process.env.ALLOWED_ORIGIN || '*', // Allow all origins in development, restrict in production
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+app.use(cors(corsOptions));
 
 // Middleware to parse JSON requests
 app.use(bodyParser.json());
@@ -32,7 +40,6 @@ app.post('/api/auth/login', async (req, res) => {
   if (username === user.username && password === user.password) {
     // Generate JWT token
     const token = jwt.sign({ username: user.username }, 'your_jwt_secret', { expiresIn: '1h' });
-    // Set Content-Type to JSON and return the token
     res.setHeader('Content-Type', 'application/json');
     res.json({ message: 'Login successful', token });
   } else {
@@ -107,15 +114,15 @@ app.get('/payment-info', (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ message: 'Internal Server Error' }); // Ensure JSON response on errors
+  res.status(500).json({ message: 'Internal Server Error' });
 });
 
 // Handle unknown routes
 app.use((req, res) => {
-  res.status(404).json({ message: 'Endpoint not found.' }); // Ensure JSON response on 404
+  res.status(404).json({ message: 'Endpoint not found.' });
 });
 
 // Listen on the specified port
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running on ${process.env.BASE_URL || 'http://localhost'}:${port}`);
 });
