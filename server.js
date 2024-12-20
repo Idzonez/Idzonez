@@ -15,11 +15,11 @@ app.use(express.static(path.join(__dirname, 'wwwroot')));
 
 // Home route (hello world)
 app.get('/', (req, res) => {
-  res.send('Hello, World!');
+  res.send('Hello, welcome to IDZonez!');
 });
 
-// Login Route (send JWT as cookie)
-app.post('/login', async (req, res) => {
+// Login Route
+app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
 
   // Replace with real user authentication logic
@@ -35,30 +35,77 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Admin page (protected route)
-app.get('/admin', verifyToken, (req, res) => {
-  res.json({ message: 'Welcome to the Admin page!' });
+// Register Route
+app.post('/api/auth/register', (req, res) => {
+  const { UserName, Email, Password } = req.body;
+
+  // Validate input
+  if (!UserName || !Email || !Password) {
+    return res.status(400).json({ message: 'All fields are required.' });
+  }
+
+  // Simulate a successful sign-up
+  res.status(201).json({ message: 'User registered successfully!' });
 });
 
-// Helper function to verify JWT token (from Authorization header)
+// Protect a route with JWT
+app.get('/protected', verifyToken, (req, res) => {
+  jwt.verify(req.token, 'your_jwt_secret', (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+    res.json({ message: 'Access granted to protected route', decoded });
+  });
+});
+
+// Helper function to verify JWT token
 function verifyToken(req, res, next) {
   const bearerHeader = req.headers['authorization'];
-  
   if (!bearerHeader) {
     return res.status(403).json({ message: 'No token provided' });
   }
 
   const bearer = bearerHeader.split(' ');
   const token = bearer[1];
+  req.token = token;
 
-  jwt.verify(token, 'your_jwt_secret', (err, decoded) => {
-    if (err) {
-      return res.status(403).json({ message: 'Forbidden' });
-    }
-    req.user = decoded; // Attach decoded user info to request
-    next();
-  });
+  next();
 }
+
+// Payment Info Routes
+app.get('/payment-info', (req, res) => {
+  const paymentMethod = req.query.method || 'bitcoin';
+  let paymentDetails = '';
+  let handlingTime = '';
+
+  if (paymentMethod === 'bitcoin') {
+    paymentDetails = '<p>Payment Address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</p>';
+    handlingTime = '<p>Handling Time: 3-5 business days</p>';
+  } else if (paymentMethod === 'cashApp') {
+    paymentDetails = '<p>Cash App ID: $YourCashAppUsername</p>';
+    handlingTime = '<p>Handling Time: 1-2 business days</p>';
+  } else if (paymentMethod === 'ethereum') {
+    paymentDetails = '<p>Payment Address: 0x32a5bf9cdb17b15422bb6bd926b4cf58b40db144</p>';
+    handlingTime = '<p>Handling Time: 2-4 business days</p>';
+  }
+
+  res.send(`
+    <h1>Payment Information</h1>
+    ${paymentDetails}
+    ${handlingTime}
+  `);
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Internal Server Error' });
+});
+
+// Handle unknown routes
+app.use((req, res) => {
+  res.status(404).json({ message: 'Endpoint not found.' });
+});
 
 // Listen on the specified port
 app.listen(port, () => {
