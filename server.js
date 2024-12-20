@@ -29,8 +29,11 @@ app.post('/api/auth/login', async (req, res) => {
   if (username === user.username && password === user.password) {
     // Generate JWT token
     const token = jwt.sign({ username: user.username }, 'your_jwt_secret', { expiresIn: '1h' });
+    // Set Content-Type to JSON and return the token
+    res.setHeader('Content-Type', 'application/json');
     res.json({ message: 'Login successful', token });
   } else {
+    res.setHeader('Content-Type', 'application/json');
     res.status(401).json({ message: 'Invalid credentials' });
   }
 });
@@ -45,6 +48,7 @@ app.post('/api/auth/register', (req, res) => {
   }
 
   // Simulate a successful sign-up
+  res.setHeader('Content-Type', 'application/json');
   res.status(201).json({ message: 'User registered successfully!' });
 });
 
@@ -89,6 +93,7 @@ app.get('/payment-info', (req, res) => {
     handlingTime = '<p>Handling Time: 2-4 business days</p>';
   }
 
+  // Return payment info in a plain HTML response (you might want to change this to JSON later)
   res.send(`
     <h1>Payment Information</h1>
     ${paymentDetails}
@@ -99,12 +104,12 @@ app.get('/payment-info', (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ message: 'Internal Server Error' });
+  res.status(500).json({ message: 'Internal Server Error' }); // Ensure JSON response on errors
 });
 
 // Handle unknown routes
 app.use((req, res) => {
-  res.status(404).json({ message: 'Endpoint not found.' });
+  res.status(404).json({ message: 'Endpoint not found.' }); // Ensure JSON response on 404
 });
 
 // Listen on the specified port
