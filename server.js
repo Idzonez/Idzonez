@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
+const rateLimit = require('express-rate-limit');
 
 // Add this to verify .env is loaded
 console.log('Environment variables loaded:', {
@@ -42,8 +43,14 @@ app.get('/test', (req, res) => {
   res.json({ message: 'Server is working!' });
 });
 
+// Add rate limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100 // limit each IP to 100 requests per windowMs
+});
+
 // Login Route
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', limiter, (req, res) => {
   console.log('Login attempt received:', req.body);
   const { username, password } = req.body;
   
@@ -89,6 +96,29 @@ app.post('/api/auth/validate-admin', (req, res) => {
   } catch (err) {
     res.status(401).json({ isValid: false, message: 'Invalid token' });
   }
+});
+
+// Add error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ 
+        message: 'Something went wrong!',
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+});
+
+// Add 404 handling
+app.use((req, res) => {
+    res.status(404).sendFile(path.join(__dirname, 'error.html'));
+});
+
+// Add security headers middleware
+app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    next();
 });
 
 // Start server
