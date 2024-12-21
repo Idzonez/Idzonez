@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const jwt = require('jsonwebtoken');
@@ -6,74 +8,90 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
-const dotenv = require('dotenv');
-dotenv.config();  // Load environment variables from .env file
 
-// Set up CORS with specific origins for production
-const corsOptions = {
-  origin: process.env.ALLOWED_ORIGIN || '*', // Allow all origins in development, restrict in production
+// Add this to verify .env is loaded
+console.log('Environment variables loaded:', {
+    username: process.env.ADMIN_USERNAME,
+    password: process.env.ADMIN_PASSWORD
+});
+
+// Middleware
+app.use(cors({
+  origin: [
+    'https://idzonez.com',
+    'https://www.idzonez.com',
+    'http://localhost:3000' // keep for local development
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
-};
-app.use(cors(corsOptions));
-
-// Middleware to parse JSON requests
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static files from the "wwwroot" directory
-app.use(express.static(path.join(__dirname, 'wwwroot')));
+// Serve static files
+app.use(express.static(__dirname));
+app.use('/views', express.static(path.join(__dirname, '..', 'Views')));
 
-// Home route (hello world)
-app.get('/', (req, res) => {
-  res.send('Hello, welcome to IDZonez!');
+// Add a specific route for the admin dashboard
+app.get('/admin-dashboard.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin-dashboard.html'));
+});
+
+// Test route to verify server is working
+app.get('/test', (req, res) => {
+  res.json({ message: 'Server is working!' });
 });
 
 // Login Route
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', (req, res) => {
+  console.log('Login attempt received:', req.body);
   const { username, password } = req.body;
+  
+  const adminUsername = process.env.ADMIN_USERNAME;
+  const adminPassword = process.env.ADMIN_PASSWORD;
 
-  // Replace with real user authentication logic
-  const user = { username: 'admin', password: 'admin' }; // Hardcoded for demo purposes
+  console.log('Login attempt:', { 
+    provided: { username, password },
+    expected: { adminUsername, adminPassword }
+  });
 
-  // Check if username and password match
-  if (username === user.username && password === user.password) {
-    // Generate JWT token
-    const token = jwt.sign({ username: user.username }, 'your_jwt_secret', { expiresIn: '1h' });
-    res.setHeader('Content-Type', 'application/json');
+  if (username === adminUsername && password === adminPassword) {
+    const token = jwt.sign(
+      { username: adminUsername },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
     res.json({ message: 'Login successful', token });
   } else {
-    res.setHeader('Content-Type', 'application/json');
     res.status(401).json({ message: 'Invalid credentials' });
   }
 });
 
-// Register Route
-app.post('/api/auth/register', (req, res) => {
-  const { username, email, password } = req.body;
-
-  // Validate input
-  if (!username || !email || !password) {
-    return res.status(400).json({ message: 'All fields are required.' });
+// Admin validation route
+app.post('/api/auth/validate-admin', (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ isValid: false, message: 'No token provided' });
   }
 
-  // Simulate a successful sign-up
-  res.setHeader('Content-Type', 'application/json');
-  res.status(201).json({ message: 'User registered successfully!' });
+  const token = authHeader.split(' ')[1];
+
+  try {
+    // Verify the token using the same secret key
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'Camreem04!..');
+    
+    // Check if the user matches the admin username from .env
+    if (decoded.username === process.env.ADMIN_USERNAME) {
+      res.json({ isValid: true });
+    } else {
+      res.status(403).json({ isValid: false, message: 'Not authorized as admin' });
+    }
+  } catch (err) {
+    res.status(401).json({ isValid: false, message: 'Invalid token' });
+  }
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Internal Server Error' });
-});
-
-// Handle unknown routes
-app.use((req, res) => {
-  res.status(404).json({ message: 'Endpoint not found.' });
-});
-
-// Listen on the specified port
+// Start server
 app.listen(port, () => {
-  console.log(`Server is running on ${process.env.BASE_URL || 'http://localhost'}:${port}`);
+  console.log(`Server running on http://localhost:${port}`);
 });
