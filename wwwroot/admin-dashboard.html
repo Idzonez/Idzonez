@@ -1,0 +1,126 @@
+<!-- admin-dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="banner">
+        <h1>Admin Dashboard</h1>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <div class="admin-content">
+        <h2>Recent Orders</h2>
+        <div id="orders-list">
+            <!-- Orders will be displayed here -->
+        </div>
+    </div>
+
+    <div id="loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <style>
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.8);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+    </style>
+
+    <script>
+        // Check admin authentication on page load
+        window.onload = function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+
+            // Validate admin token
+            fetch('http://localhost:3000/api/auth/validate-admin', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.isValid) {
+                    window.location.href = 'admin-login.html';
+                } else {
+                    document.getElementById('orders-list').innerHTML = '<p>Successfully logged in as admin!</p>';
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                window.location.href = 'admin-login.html';
+            });
+
+            checkAndDisplayUser();
+        };
+
+        function logout() {
+            if (confirm('Are you sure you want to log out?')) {
+                localStorage.removeItem('token');
+                window.location.href = 'admin-login.html';
+            }
+        }
+
+        function checkSessionTimeout() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const expiryTime = payload.exp * 1000; // Convert to milliseconds
+                    
+                    if (Date.now() >= expiryTime) {
+                        alert('Your session has expired. Please log in again.');
+                        logout();
+                    } else {
+                        // Check again 1 minute before expiry
+                        const timeUntilExpiry = expiryTime - Date.now();
+                        if (timeUntilExpiry <= 60000) { // 1 minute
+                            alert('Your session will expire soon!');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error checking session:', error);
+                }
+            }
+        }
+
+        // Check every minute
+        setInterval(checkSessionTimeout, 60000);
+    </script>
+</body>
+</html>

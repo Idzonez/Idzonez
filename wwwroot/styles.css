@@ -1,0 +1,243 @@
+ /* General Styles */
+ body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Lato', sans-serif;
+    color: #333;
+}
+
+/* Banner (Navigation Bar) */
+.banner {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.banner a {
+    color: white;
+    margin: 0 15px;
+    padding: 10px 15px;
+    font-weight: bold;
+}
+
+.banner a:hover {
+    background-color: #0056b3;
+    border-radius: 5px;
+}
+
+/* Main Content */
+.content {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+/* Form Container */
+.form-container, .checkout-container, .cart-container {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+h1 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+/* Form Inputs */
+input[type="text"], input[type="date"], input[type="file"], textarea, select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+input[type="file"] {
+    padding: 5px;
+}
+
+/* Button Styles */
+button, .checkout-button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    display: block;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+button:hover, .checkout-button:hover {
+    background-color: #0056b3;
+}
+
+/* Cart Page */
+.cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cart-item {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.cart-item:hover {
+    transform: scale(1.05);
+}
+
+.cart-item .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-item .expand-details {
+    cursor: pointer;
+    color: #007bff;
+}
+
+.cart-item .item-details {
+    display: none;
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+.cart-item .item-details.expanded {
+    display: block;
+}
+
+/* Checkout Page */
+#payment-method {
+    margin-bottom: 20px;
+}
+
+#payment-details {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+.checkout-button {
+    background-color: #28a745;
+    text-align: center;
+    display: inline-block;
+}
+
+.checkout-button:hover {
+    background-color: #218838;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .banner {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .banner a {
+        margin: 10px 0;
+    }
+
+    .content, .form-container, .checkout-container, .cart-container {
+        padding: 15px;
+        width: 90%;
+    }
+}
+
+/* Shopping Cart Icon */
+#cart-count {
+    background-color: #28a745;
+    padding: 5px 10px;
+    border-radius: 50%;
+    font-weight: bold;
+    position: relative;
+    top: -5px;
+    right: 10px;
+}
+
+/* Additional Styles for Form Fields */
+label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Add these styles to your existing styles.css */
+.login-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
