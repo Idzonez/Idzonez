@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Admin Navigation -->
+<div class="banner">
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="order-management.html">Order Management</a>
+    <a href="product-management.html">Product Management</a>
+    <a href="user-management.html">User Management</a>
+    <a href="#" onclick="logout()">Logout</a>
+</div>
+
+<!-- Order Management -->
+<div class="order-management-container">
+    <h1>Manage Orders</h1>
+    <div id="orders-list"></div>
+</div>
+
+<script>
+    // Fetch and display orders
+    window.onload = function() {
+        const token = localStorage.getItem('adminToken');
+        if (!token) {
+            window.location.href = 'admin-login.html';  // Redirect to login if not logged in
+            return;
+        }
+
+        fetch('/api/admin/orders', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        })
+        .then(response => response.json())
+        .then(orders => {
+            const ordersList = document.getElementById('orders-list');
+            ordersList.innerHTML = '';
+            orders.forEach(order => {
+                ordersList.innerHTML += `
+                    <div class="order-item">
+                        <p>Order ID: ${order.id}</p>
+                        <p>User: ${order.user}</p>
+                        <p>Amount: $${order.amount}</p>
+                        <p>Status: ${order.status}</p>
+                        <button onclick="markAsShipped(${order.id})">Mark as Shipped</button>
+                    </div>
+                `;
+            });
+        });
+    };
+
+    // Mark an order as shipped
+    function markAsShipped(orderId) {
+        const token = localStorage.getItem('adminToken');
+        fetch(`/api/admin/orders/${orderId}/ship`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => alert('Order marked as shipped.'));
+    }
+
+    // Logout function
+    function logout() {
+        localStorage.removeItem('adminToken');
+        window.location.href = 'admin-login.cshtml';
+    }
+</script>
+    <!-- Your existing content -->
+    <!-- Add this just before </body> -->
+    <div id="user-display" class="user-corner">
+        <span id="username-display"></span>
+        <button onclick="logout()" class="logout-btn">Logout</button>
+    </div>
+     <style>
+        .user-corner {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: none; /* Hidden by default */
+        }
+         .user-corner span {
+            margin-right: 10px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+         .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+         .logout-btn:hover {
+            background: #c0392b;
+        }
+    </style>
+     <script>
+        function checkAndDisplayUser() {
+            const username = localStorage.getItem('username');
+            const userDisplay = document.getElementById('user-display');
+            const usernameDisplay = document.getElementById('username-display');
+            
+            if (username) {
+                usernameDisplay.textContent = `Welcome, ${username}`;
+                userDisplay.style.display = 'block';
+            } else {
+                userDisplay.style.display = 'none';
+            }
+        }
+         function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            window.location.href = 'admin-login.html';
+        }
+         document.addEventListener('DOMContentLoaded', checkAndDisplayUser);
+    </script>
+</body>
+</html>

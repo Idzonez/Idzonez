@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="admin-dashboard">
+        <h1>Admin Dashboard</h1>
+        <div id="admin-content">
+            <!-- Admin content will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Check for admin authentication when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            // Validate admin token
+            fetch('https://idzonez.com/api/auth/validate-admin', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.isValid) {
+                    // If not valid admin, redirect to login
+                    window.location.href = '/login.html';
+                } else {
+                    // Load admin content
+                    document.getElementById('admin-content').innerHTML = `
+                        <p>Welcome, Admin!</p>
+                        <!-- Add your admin panel content here -->
+                    `;
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                window.location.href = '/login.html';
+            });
+        });
+    </script>
+
+        <!-- Your existing content -->
+    <!-- Add this just before </body> -->
+   <div id="user-display" class="user-corner">
+    <span id="username-display"></span>
+    <button onclick="logout()" class="logout-btn">Logout</button>
+</div>
+ <style>
+    .user-corner {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        display: none; /* Hidden by default */
+    }
+     .user-corner span {
+        margin-right: 10px;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+     .logout-btn {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+     .logout-btn:hover {
+        background: #c0392b;
+    }
+</style>
+ <script>
+    function checkAndDisplayUser() {
+        const username = localStorage.getItem('username');
+        const userDisplay = document.getElementById('user-display');
+        const usernameDisplay = document.getElementById('username-display');
+        
+        if (username) {
+            usernameDisplay.textContent = `Welcome, ${username}`;
+            userDisplay.style.display = 'block';
+        } else {
+            userDisplay.style.display = 'none';
+        }
+    }
+     function logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        window.location.href = 'admin-login.html';
+    }
+     document.addEventListener('DOMContentLoaded', checkAndDisplayUser);
+</script>
+</body>
+</html> 
