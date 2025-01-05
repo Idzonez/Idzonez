@@ -1,9 +1,9 @@
 services:
-  -type: web
+  - type: web
    name: idzonez
    env: node
-   buildCommand: cd wwwroot && npm install
-   startCommand: cd wwwroot && node server.js
+   buildCommand: npm install
+   startCommand: node server.js
    envVars:
      - key: PORT
        value: 3000
