@@ -10,11 +10,9 @@ const app = express();
 const port = process.env.PORT || 3000;
 const rateLimit = require('express-rate-limit');
 
-// Add this to verify .env is loaded
-console.log('Environment variables loaded:', {
-    username: process.env.ADMIN_USERNAME,
-    password: process.env.ADMIN_PASSWORD
-});
+// Add this to check if env variables are loaded
+console.log('Admin Username:', process.env.ADMIN_USERNAME);
+console.log('Admin Password:', process.env.ADMIN_PASSWORD);
 
 // Middleware
 app.use(cors({
@@ -54,8 +52,15 @@ app.post('/api/auth/login', limiter, (req, res) => {
   console.log('Login attempt received:', req.body);
   const { username, password } = req.body;
   
-  const adminUsername = process.env.ADMIN_USERNAME;
-  const adminPassword = process.env.ADMIN_PASSWORD;
+  // Add these console logs for debugging
+  console.log('Attempting login with:', { username, password });
+  console.log('Expected credentials:', { 
+    username: process.env.ADMIN_USERNAME, 
+    password: process.env.ADMIN_PASSWORD 
+  });
+
+  const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+  const adminPassword = process.env.ADMIN_PASSWORD || 'admin';
 
   console.log('Login attempt:', { 
     provided: { username, password },
@@ -65,7 +70,7 @@ app.post('/api/auth/login', limiter, (req, res) => {
   if (username === adminUsername && password === adminPassword) {
     const token = jwt.sign(
       { username: adminUsername },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || 'Camreem04!..',
       { expiresIn: '1h' }
     );
     res.json({ message: 'Login successful', token });
@@ -119,6 +124,11 @@ app.use((req, res, next) => {
     res.setHeader('X-XSS-Protection', '1; mode=block');
     res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
     next();
+});
+
+// Health check route
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'UP' }); // Respond with a JSON object
 });
 
 // Start server
