@@ -35,61 +35,9 @@ app.use('/views', express.static(path.join(__dirname, '..', 'Views')));
 app.use(express.static(__dirname));
 app.use('/wwwroot', express.static(path.join(__dirname, '..', 'wwwroot')));
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Views/index.html'));
-});
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Views/about.html'));
-});
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Views/admin.html'));
-});
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Views/cart.html'));
-});
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Views/checkout.html'));
-});
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Views/login.html'));
-});
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Views/order-management.html'));
-});
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Views/order.html'));
-});
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Views/payment.html'));
-});
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Views/product-management.html'));
-});
-
 // Add a specific route for the admin dashboard
 app.get('/admin-dashboard.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin-dashboard.html'));
-});
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'wwwroot/error.html'));
-});
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'wwwroot/admin-dashboard.html'));
-});
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'wwwroot/admin-login.html'));
 });
 
 // Health check route
@@ -102,16 +50,16 @@ app.get('/test', (req, res) => {
     res.json({ message: 'Server is working!' });
 });
 
+// Route for the index.html page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'Views/index.html'));
+});
+
+
 // Add rate limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100 // limit each IP to 100 requests per windowMs
-});
-
-
-// Route for the index.html page
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'Views/index.html'));
 });
 
 // Login Route
