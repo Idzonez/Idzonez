@@ -36,9 +36,14 @@ app.get('/admin-dashboard.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin-dashboard.html'));
 });
 
+// Health check route
+app.get('/health', (req, res) => {
+    res.json({ status: 'UP' }); // Respond with a JSON object
+});
+
 // Test route to verify server is working
 app.get('/test', (req, res) => {
-  res.json({ message: 'Server is working!' });
+    res.json({ message: 'Server is working!' });
 });
 
 // Add rate limiting
@@ -124,11 +129,6 @@ app.use((req, res, next) => {
     res.setHeader('X-XSS-Protection', '1; mode=block');
     res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
     next();
-});
-
-// Health check route
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'UP' }); // Respond with a JSON object
 });
 
 // Start server
