@@ -56,7 +56,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/order.html', (req, res) => {
-    res.sendFile(path.join(__dirname, '../Views', 'order.html')); // Adjusted path to point to Views
+    res.sendFile(path.join(__dirname, 'IDZonez/Views', 'order.html')); // Adjusted path to point to Views
 });
 
 // Add rate limiting
