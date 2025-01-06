@@ -51,7 +51,7 @@ app.get('/test', (req, res) => {
 });
 
 // Route for the index.html page
-app.get('/', (req, res) => {
+app.get('/index.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'Views/index.html'));
 });
 
@@ -89,6 +89,14 @@ app.get('/payment.html', (req, res) => {
 
 app.get('/product-management.html', (req, res) => {
     res.sendFile(path.join(__dirname, '/Views', 'product-management.html')); // Adjusted path to point to Views
+});
+
+app.get('/admin-dashboard.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '/wwwroot', 'admin-dashboard.html')); // Adjusted path to point to wwwroot
+});
+
+app.get('/admin-login.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '/wwwroot', 'admin-login.html')); // Adjusted path to point to wwwroot
 });
 
 // Add rate limiting
