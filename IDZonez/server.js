@@ -30,6 +30,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Serve static files
 app.use(express.static(__dirname));
 app.use('/views', express.static(path.join(__dirname, '..', 'Views')));
+
+// Serve static files
+app.use(express.static(__dirname));
 app.use('/wwwroot', express.static(path.join(__dirname, '..', 'wwwroot')));
 
 // Add a specific route for the admin dashboard
@@ -110,7 +113,7 @@ const limiter = rateLimit({
 app.post('/api/auth/login', limiter, (req, res) => {
   console.log('Login attempt received:', req.body);
   const { username, password } = req.body;
-
+  
   // Add these console logs for debugging
   console.log('Attempting login with:', { username, password });
   console.log('Expected credentials:', { 
@@ -138,30 +141,6 @@ app.post('/api/auth/login', limiter, (req, res) => {
   }
 });
 
-// Admin login route
-app.post('/api/auth/admin-login', (req, res) => {
-    console.log('Admin login attempt received:', req.body);
-    const { username, password } = req.body;
-
-    // Log the provided credentials for debugging
-    console.log('Attempting admin login with:', { username, password });
-
-    const adminUsername = process.env.ADMIN_USERNAME || 'admin';
-    const adminPassword = process.env.ADMIN_PASSWORD || 'admin';
-
-    // Check if the provided credentials match the expected ones
-    if (username === adminUsername && password === adminPassword) {
-        const token = jwt.sign(
-            { username: adminUsername },
-            process.env.JWT_SECRET || 'Camreem04!..',
-            { expiresIn: '1h' }
-        );
-        res.json({ isValid: true, message: 'Login successful', token });
-    } else {
-        res.status(401).json({ isValid: false, message: 'Invalid credentials' });
-    }
-});
-
 // Admin validation route
 app.post('/api/auth/validate-admin', (req, res) => {
   const authHeader = req.headers.authorization;
@@ -184,6 +163,30 @@ app.post('/api/auth/validate-admin', (req, res) => {
   } catch (err) {
     res.status(401).json({ isValid: false, message: 'Invalid token' });
   }
+});
+
+// Admin login route
+app.post('/api/auth/admin-login', (req, res) => {
+    console.log('Admin login attempt received:', req.body);
+    const { username, password } = req.body;
+
+    // Log the provided credentials for debugging
+    console.log('Attempting admin login with:', { username, password });
+
+    const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin';
+
+    // Check if the provided credentials match the expected ones
+    if (username === adminUsername && password === adminPassword) {
+        const token = jwt.sign(
+            { username: adminUsername },
+            process.env.JWT_SECRET || 'Camreem04!..',
+            { expiresIn: '1h' }
+        );
+        res.json({ isValid: true, message: 'Login successful', token, redirectUrl: '/admin-dashboard.html' });
+    } else {
+        res.status(401).json({ isValid: false, message: 'Invalid credentials' });
+    }
 });
 
 // Add error handling middleware
