@@ -51,6 +51,10 @@ app.get('/test', (req, res) => {
 });
 
 // Route for the index.html page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'Views/index.html'));
+});
+
 app.get('/index.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'Views/index.html'));
 });
