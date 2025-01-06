@@ -52,6 +52,12 @@ const limiter = rateLimit({
     max: 100 // limit each IP to 100 requests per windowMs
 });
 
+
+// Route for the index.html page
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Views/index.html'));
+});
+
 // Login Route
 app.post('/api/auth/login', limiter, (req, res) => {
   console.log('Login attempt received:', req.body);
