@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -39,11 +39,8 @@
                     // If not valid admin, redirect to login
                     window.location.href = '/login.html';
                 } else {
-                    // Load admin content
-                    document.getElementById('admin-content').innerHTML = `
-                        <p>Welcome, Admin!</p>
-                        <!-- Add your admin panel content here -->
-                    `;
+                    // Redirect to the admin page
+                    window.location.href = '/admin'; // Change to the desired admin page
                 }
             })
             .catch(err => {
@@ -53,7 +50,6 @@
         });
     </script>
 
-    <!-- Your existing content -->
     <div id="user-display" class="user-corner">
         <span id="username-display"></span>
         <button onclick="logout()" class="logout-btn">Logout</button>
@@ -100,7 +96,6 @@
             }
         }
         function logout() {
-            localStorage.removeItem('token'); // Optional, if you want to clear the token
             localStorage.removeItem('username');
             localStorage.removeItem('password'); // Clear the password if stored
             window.location.href = 'admin-login.html';
