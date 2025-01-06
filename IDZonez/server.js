@@ -91,10 +91,6 @@ app.get('/product-management.html', (req, res) => {
     res.sendFile(path.join(__dirname, '/Views', 'product-management.html')); // Adjusted path to point to Views
 });
 
-app.get('/error.html', (req, res) => {
-    res.sendFile(path.join(__dirname, '/wwwroot', 'error.html')); // Adjusted path to point to wwwroot
-});
-
 // Add rate limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -168,7 +164,7 @@ app.use((err, req, res, next) => {
 
 // Add 404 handling
 app.use((req, res) => {
-    res.status(404).sendFile(path.join(__dirname, 'error.html'));
+    res.status(404).sendFile(path.join(__dirname, '/wwwroot', 'error.html'));
 });
 
 // Add security headers middleware
