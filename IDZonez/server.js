@@ -55,6 +55,9 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'Views/index.html'));
 });
 
+app.get('/order.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../Views', 'order.html')); // Adjusted path to point to Views
+});
 
 // Add rate limiting
 const limiter = rateLimit({
