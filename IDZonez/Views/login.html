@@ -40,9 +40,13 @@
     <div id="admin-login-form" style="display:none;">
         <form id="admin-login-form-action">
             <h2>Admin Login</h2>
-            <label for="admin-token">Enter Admin Token</label>
-            <input type="text" id="admin-token" placeholder="Enter admin token" required>
-            <button type="submit">Submit</button>
+            <label for="admin-username">Username</label>
+            <input type="text" id="admin-username" placeholder="Enter username" required>
+            
+            <label for="admin-password">Password</label>
+            <input type="password" id="admin-password" placeholder="Enter password" required>
+            
+            <button type="submit">Login</button>
         </form>
         <p>Back to <a href="#" onclick="toggleForm('login')">Login</a></p>
     </div>
@@ -120,22 +124,23 @@
     // Handle admin login form submission
     document.getElementById('admin-login-form-action').addEventListener('submit', function(e) {
         e.preventDefault();
-        const token = document.getElementById('admin-token').value;
+        const username = document.getElementById('admin-username').value;
+        const password = document.getElementById('admin-password').value;
 
-        // Validate the token via the API
-        fetch('https://idzonez.com/api/auth/validate-admin', { 
+        // Validate the username and password via the API
+        fetch('https://idzonez.com/api/auth/admin-login', { 
             method: 'POST',
             headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` 
-            }
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({ username: username, password: password })
         })
         .then(response => response.json())
         .then(data => {
             if (data.isValid) {
                 window.location.href = '/admin';  // Redirect to admin page
             } else {
-                alert('Invalid admin token');
+                alert('Invalid admin credentials');
             }
         })
         .catch(err => alert('Admin login failed: ' + err));
