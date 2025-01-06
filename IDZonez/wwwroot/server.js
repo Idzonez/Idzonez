@@ -112,7 +112,7 @@ app.post('/api/auth/validate-admin', (req, res) => {
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ 
-        message: 'Something went wrong!',
+        message: 'Something blud!',
         error: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
 });
