@@ -59,6 +59,42 @@ app.get('/order.html', (req, res) => {
     res.sendFile(path.join(__dirname, '/Views', 'order.html')); // Adjusted path to point to Views
 });
 
+app.get('/about.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '/Views', 'about.html')); // Adjusted path to point to Views
+});
+
+app.get('/cart.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '/Views', 'cart.html')); // Adjusted path to point to Views
+});
+
+app.get('/admin.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '/Views', 'admin.html')); // Adjusted path to point to Views
+});
+
+app.get('/checkout.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '/Views', 'checkout.html')); // Adjusted path to point to Views
+});
+
+app.get('/login.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '/Views', 'login.html')); // Adjusted path to point to Views
+});
+
+app.get('/order-management.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '/Views', 'order-management.html')); // Adjusted path to point to Views
+});
+
+app.get('/payment.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '/Views', 'payment.html')); // Adjusted path to point to Views
+});
+
+app.get('/product-management.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '/Views', 'product-management.html')); // Adjusted path to point to Views
+});
+
+app.get('/error.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '/wwwroot', 'error.html')); // Adjusted path to point to wwwroot
+});
+
 // Add rate limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
