@@ -138,7 +138,8 @@
         .then(response => response.json())
         .then(data => {
             if (data.isValid) {
-                window.location.href = '/admin';  // Redirect to admin page
+                localStorage.setItem('token', data.token); // Store the token if needed
+                window.location.href = data.redirectUrl;  // Redirect to the admin dashboard
             } else {
                 alert('Invalid admin credentials');
             }
