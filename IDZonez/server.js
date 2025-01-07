@@ -1,7 +1,9 @@
-require('dotenv').config();
+ require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
@@ -104,52 +106,98 @@ const limiter = rateLimit({
     max: 100 // limit each IP to 100 requests per windowMs
 });
 
-// Regular user login route
-app.post('/api/auth/login', (req, res) => {
-    console.log('Regular login attempt received:', req.body);
-    const { username, password } = req.body;
+// Login Route
+app.post('/api/auth/login', limiter, (req, res) => {
+  console.log('Login attempt received:', req.body);
+  const { username, password } = req.body;
 
-    // Log the attempt
-    console.log('Regular login attempt with username:', username);
+  // Add these console logs for debugging
+  console.log('Attempting login with:', { username, password });
+  console.log('Expected credentials:', { 
+    username: process.env.ADMIN_USERNAME, 
+    password: process.env.ADMIN_PASSWORD 
+  });
 
-    // For now, always return unsuccessful for regular login
-    res.status(401).json({ 
-        isValid: false, 
-        message: 'Invalid credentials'
-    });
+  const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+  const adminPassword = process.env.ADMIN_PASSWORD || 'admin';
+
+  console.log('Login attempt:', { 
+    provided: { username, password },
+    expected: { adminUsername, adminPassword }
+  });
+
+  if (username === adminUsername && password === adminPassword) {
+    const token = jwt.sign(
+      { username: adminUsername },
+      process.env.JWT_SECRET || 'Camreem04!..',
+      { expiresIn: '1h' }
+    );
+    res.json({ message: 'Login successful', token });
+  } else {
+    res.status(401).json({ message: 'Invalid credentials' });
+  }
 });
 
 // Admin login route
 app.post('/api/auth/admin-login', (req, res) => {
+    console.log('Admin login attempt received:', req.body);
     const { username, password } = req.body;
 
-    // Hardcoded admin credentials for testing
-    const adminUsername = 'admin';     // Hardcoded username
-    const adminPassword = 'password';   // Hardcoded password
+    // Log the provided credentials for debugging
+    console.log('Attempting admin login with:', { username, password });
 
-    // Only log when an actual login attempt is made
-    console.log('Admin login attempt received with username:', username);
-    
-    // Check if the provided credentials match the admin credentials
+    const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin';
+
+    // Check if the provided credentials match the expected ones
     if (username === adminUsername && password === adminPassword) {
-        console.log('Admin login successful');
-        res.json({ 
-            isValid: true, 
-            message: 'Admin login successful', 
-            redirectUrl: '/admin'
-        });
+        const token = jwt.sign(
+            { username: adminUsername },
+            process.env.JWT_SECRET || 'Camreem04!..',
+            { expiresIn: '1h' }
+        );
+        res.json({ isValid: true, message: 'Login successful', token });
     } else {
-        console.log('Admin login failed - invalid credentials');
-        res.status(401).json({ 
-            isValid: false, 
-            message: 'Invalid admin credentials' 
-        });
+        res.status(401).json({ isValid: false, message: 'Invalid credentials' });
     }
 });
 
-// Admin route
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'wwwroot', 'admin-dashboard.html'));
+// Admin validation route
+app.post('/api/auth/validate-admin', (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ isValid: false, message: 'No token provided' });
+  }
+
+  const token = authHeader.split(' ')[1];
+
+  try {
+    // Verify the token using the same secret key
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'Camreem04!..');
+    
+    // Check if the user matches the admin username from .env
+    if (decoded.username === process.env.ADMIN_USERNAME) {
+      res.json({ isValid: true });
+    } else {
+      res.status(403).json({ isValid: false, message: 'Not authorized as admin' });
+    }
+  } catch (err) {
+    res.status(401).json({ isValid: false, message: 'Invalid token' });
+  }
+});
+
+// Add error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ 
+        message: 'Something went wrong!',
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+});
+
+// Add 404 handling
+app.use((req, res) => {
+    res.status(404).sendFile(path.join(__dirname, '/wwwroot', 'error.html'));
 });
 
 // Add security headers middleware
